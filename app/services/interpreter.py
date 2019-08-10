@@ -1,6 +1,6 @@
 import operator
 import pyparsing as pp
-
+pp.ParserElement.enablePackrat()
 
 ops_table = {
     "&&": operator.and_,
