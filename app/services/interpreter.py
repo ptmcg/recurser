@@ -463,11 +463,11 @@ and_condition = (condition + pp.ZeroOrMore(_and + condition)).setParseAction(
 or_condition << and_condition + pp.ZeroOrMore(_or + and_condition)
 or_condition.setParseAction(OrCondition)
 
-else_cond = (_else.suppress() + lbrace + block + rbrace).setParseAction(ElseCondition)
+else_cond = (_else.suppress() - lbrace + block + rbrace).setParseAction(ElseCondition)
 
 if_cond = (
     _if.suppress()
-    + lparen
+    - lparen
     + or_condition
     + rparen
     + lbrace
@@ -487,7 +487,7 @@ block << pp.ZeroOrMore(statement).setParseAction(Block)
 
 loop << (
     _for.suppress()
-    + lparen
+    - lparen
     + assignment
     + semicolon
     + or_condition
@@ -504,7 +504,7 @@ fundef = (
     fun.suppress()
     + lparen
     + pp.Group(pp.Optional(pp.delimitedList(identifier)))
-    + rparen
+    - rparen
     + lbrace
     + block
     + rbrace
