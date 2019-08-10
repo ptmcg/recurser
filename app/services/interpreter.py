@@ -246,10 +246,7 @@ class AndCondition(object):
         self.conditions = toks
 
     def execute(self, context):
-        for condition in self.conditions:
-            if not condition.execute(context):
-                return False
-        return True
+        return all(condition.execute(context) for condition in self.conditions)
 
 
 class OrCondition(object):
@@ -257,10 +254,7 @@ class OrCondition(object):
         self.and_conditions = toks
 
     def execute(self, context):
-        for and_condition in self.and_conditions:
-            if and_condition.execute(context):
-                return True
-        return False
+        return any(and_condition.execute(context) for and_condition in self.and_conditions)
 
 
 class Assignment(object):
