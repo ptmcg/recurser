@@ -96,8 +96,8 @@ class Identifier(object):
         self.array_access = None
         self.loc = loc
 
-        if len(toks) > 1:
-            self.array_access = toks[1]
+        if "array_index" in toks:
+            self.array_access = toks.array_index
 
     def execute(self, context):
         value = context.values[self.value]
@@ -300,8 +300,8 @@ class IfCondition(object):
         self.block = toks[1]
         self._else = None
 
-        if len(toks) == 3:
-            self._else = toks[2]
+        if "else_clause" in toks:
+            self._else = toks.else_clause
 
     def execute(self, context):
         if self.or_condition.execute(context):
@@ -433,7 +433,7 @@ identifier = (
     ~keywords
     + ~function
     + pp.Word(pp.alphanums + "_")
-    + pp.Optional(lbrack + summand + rbrack)
+    + pp.Optional(lbrack + summand("array_index") + rbrack)
 )
 identifier.setParseAction(Identifier)
 
@@ -474,7 +474,7 @@ if_cond = (
     + lbrace
     + block
     + rbrace
-    + pp.Optional(else_cond)
+    + pp.Optional(else_cond("else_clause"))
 ).setParseAction(IfCondition)
 
 return_stmt = (_return.suppress() + expression).setParseAction(Return)
