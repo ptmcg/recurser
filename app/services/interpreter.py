@@ -434,9 +434,9 @@ identifier.setParseAction(Identifier)
 array = (lbrack + pp.Optional(pp.delimitedList(summand)) + rbrack).setParseAction(Array)
 value = number | array | method_call | identifier | string | function_call | main_call
 term = (value | (lparen + summand + rparen)).setParseAction(Term)
-factor = (term + pp.ZeroOrMore(pp.oneOf(("*", "/")) + term)).setParseAction(Factor)
+factor = (term + (pp.oneOf(("*", "/")) + term)[...]).setParseAction(Factor)
 
-summand <<= factor + pp.ZeroOrMore(pp.oneOf(("+", "-")) + factor)
+summand <<= factor + (pp.oneOf(("+", "-")) + factor)[...]
 summand.setParseAction(Summand)
 
 function_call <<= (function + lparen + pp.Optional(pp.delimitedList(summand)) + rparen)
@@ -452,10 +452,8 @@ assignment = (identifier + pp.Suppress("=") + summand).setParseAction(Assignment
 expression = (summand + pp.Optional(operator + summand)).setParseAction(Test)
 
 condition = (expression | (lparen + or_condition + rparen)).setParseAction(Condition)
-and_condition = (condition + pp.ZeroOrMore(_and + condition)).setParseAction(
-    AndCondition
-)
-or_condition <<= and_condition + pp.ZeroOrMore(_or + and_condition)
+and_condition = (condition + (_and + condition)[...]).setParseAction(AndCondition)
+or_condition <<= and_condition + (_or + and_condition)[...]
 or_condition.setParseAction(OrCondition)
 
 else_cond = (_else.suppress() - lbrace + block + rbrace).setParseAction(ElseCondition)
