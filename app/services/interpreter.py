@@ -441,16 +441,16 @@ value = number | array | method_call | identifier | string | function_call | mai
 term = (value | (lparen + summand + rparen)).setParseAction(Term)
 factor = (term + pp.ZeroOrMore(pp.oneOf(("*", "/")) + term)).setParseAction(Factor)
 
-summand << factor + pp.ZeroOrMore(pp.oneOf(("+", "-")) + factor)
+summand <<= factor + pp.ZeroOrMore(pp.oneOf(("+", "-")) + factor)
 summand.setParseAction(Summand)
 
-function_call << (function + lparen + pp.Optional(pp.delimitedList(summand)) + rparen)
+function_call <<= (function + lparen + pp.Optional(pp.delimitedList(summand)) + rparen)
 function_call.setParseAction(FunctionCall)
 
-method_call << (identifier + "." + function_call)
+method_call <<= (identifier + "." + function_call)
 method_call.setParseAction(MethodCall)
 
-main_call << (fun.suppress() + lparen + pp.Optional(pp.delimitedList(summand)) + rparen)
+main_call <<= (fun.suppress() + lparen + pp.Optional(pp.delimitedList(summand)) + rparen)
 main_call.setParseAction(MainCall)
 
 assignment = (identifier + pp.Suppress("=") + summand).setParseAction(Assignment)
@@ -460,7 +460,7 @@ condition = (expression | (lparen + or_condition + rparen)).setParseAction(Condi
 and_condition = (condition + pp.ZeroOrMore(_and + condition)).setParseAction(
     AndCondition
 )
-or_condition << and_condition + pp.ZeroOrMore(_or + and_condition)
+or_condition <<= and_condition + pp.ZeroOrMore(_or + and_condition)
 or_condition.setParseAction(OrCondition)
 
 else_cond = (_else.suppress() - lbrace + block + rbrace).setParseAction(ElseCondition)
@@ -483,9 +483,9 @@ simple_stmt = ((assignment | return_stmt | expression) + semicolon).setParseActi
 )
 statement = (loop | if_cond | simple_stmt).setParseAction(Statement)
 
-block << pp.ZeroOrMore(statement).setParseAction(Block)
+block <<= pp.ZeroOrMore(statement).setParseAction(Block)
 
-loop << (
+loop <<= (
     _for.suppress()
     - lparen
     + assignment
