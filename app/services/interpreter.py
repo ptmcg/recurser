@@ -418,13 +418,14 @@ keywords = _if | _else | _return | _for | fun
 function = _len | append | replace | insert
 operator = pp.oneOf((">", ">=", "<", "<=", "==", "!="))
 
-number = (
-    pp.Combine(
-        pp.Optional("-")
-        + pp.Word(pp.nums)
-        + pp.Optional("." + pp.OneOrMore(pp.Word(pp.nums)))
-    )
-).setParseAction(Number)
+# number = (
+#     pp.Combine(
+#         pp.Optional("-")
+#         + pp.Word(pp.nums)
+#         + pp.Optional("." + pp.OneOrMore(pp.Word(pp.nums)))
+#     )
+# ).setParseAction(Number)
+number = pp.Regex(r'-?\d+(\.\d*)?').setParseAction(Number)
 
 string = pp.QuotedString(quoteChar='"').setParseAction(String)
 
