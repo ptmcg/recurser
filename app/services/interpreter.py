@@ -512,6 +512,7 @@ fundef = (
 
 program = (fundef + main_call + semicolon).setParseAction(Program)
 
+program.ignore(pp.cppStyleComment | pp.pythonStyleComment)
 
 def parse(code):
     return program.parseString(code, parseAll=True)[0]
